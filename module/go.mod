@@ -158,3 +158,5 @@ replace github.com/gogo/grpc => google.golang.org/grpc v1.33.2
 replace google.golang.org/grpc => google.golang.org/grpc v1.33.2
 
 replace github.com/confio/ics23/go => github.com/cosmos/cosmos-sdk/ics23 v0.0.0-20221014140410-2582f0aab7b2
+
+replace github.com/cosmos/cosmos-sdk => github.com/reapchain/cosmos-sdk v0.45.7-reap.sdk.v0.4.10

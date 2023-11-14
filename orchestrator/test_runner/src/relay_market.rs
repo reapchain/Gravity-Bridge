@@ -12,7 +12,7 @@ use clarity::{Address as EthAddress, Uint256};
 use cosmos_gravity::query::get_oldest_unsigned_transaction_batches;
 use cosmos_gravity::send::send_to_eth;
 use deep_space::coin::Coin;
-use deep_space::private_key::{CosmosPrivateKey, PrivateKey};
+use deep_space::private_key::{EthermintPrivateKey, PrivateKey};
 use deep_space::{Address, Contact};
 use ethereum_gravity::utils::get_tx_batch_nonce;
 use gravity_proto::gravity::query_client::QueryClient as GravityQueryClient;
@@ -78,7 +78,7 @@ async fn setup_batch_test(
     erc20_contract: EthAddress,
     bridge_fee_amount: Uint256,
     grpc_client: &mut GravityQueryClient<Channel>,
-) -> (Coin, Uint256, CosmosPrivateKey, Address, EthAddress) {
+) -> (Coin, Uint256, EthermintPrivateKey, Address, EthAddress) {
     let mut grpc_client = grpc_client.clone();
     info!("Starting batch test!");
 
@@ -130,7 +130,7 @@ async fn setup_batch_test(
     // Generate an address to send funds
     let mut rng = rand::thread_rng();
     let secret: [u8; 32] = rng.gen();
-    let dest_cosmos_private_key = CosmosPrivateKey::from_secret(&secret);
+    let dest_cosmos_private_key = EthermintPrivateKey::from_secret(&secret);
     let dest_cosmos_address = dest_cosmos_private_key
         .to_address(ADDRESS_PREFIX.as_str())
         .unwrap();

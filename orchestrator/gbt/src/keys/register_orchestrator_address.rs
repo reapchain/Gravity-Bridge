@@ -11,7 +11,7 @@ use clarity::PrivateKey as EthPrivateKey;
 use cosmos_gravity::send::set_gravity_delegate_addresses;
 use deep_space::{
     mnemonic::Mnemonic,
-    private_key::{CosmosPrivateKey, PrivateKey},
+    private_key::{EthermintPrivateKey, PrivateKey},
 };
 use gravity_utils::connection_prep::check_for_fee;
 use gravity_utils::connection_prep::{create_rpc_connections, wait_for_cosmos_node_ready};
@@ -44,18 +44,18 @@ pub async fn register_orchestrator_address(
     // Set the cosmos key to either the cli value, the value in the config, or a generated
     // value if the config has not been setup
     let cosmos_key = if let Some(cosmos_phrase) = cosmos_phrase.clone() {
-        CosmosPrivateKey::from_phrase(&cosmos_phrase, "").expect("Failed to parse cosmos key")
+        EthermintPrivateKey::from_phrase(&cosmos_phrase, "").expect("Failed to parse cosmos key")
     } else {
         let mut key = None;
         if config_exists(&home_dir) {
             let keys = load_keys(&home_dir);
             if let Some(phrase) = keys.orchestrator_phrase {
-                key = Some(CosmosPrivateKey::from_phrase(phrase.as_str(), "").unwrap());
+                key = Some(EthermintPrivateKey::from_phrase(phrase.as_str(), "").unwrap());
             }
         }
         if key.is_none() {
             let new_phrase = Mnemonic::generate(24).unwrap();
-            key = Some(CosmosPrivateKey::from_phrase(new_phrase.as_str(), "").unwrap());
+            key = Some(EthermintPrivateKey::from_phrase(new_phrase.as_str(), "").unwrap());
             generated_cosmos = Some(new_phrase);
         }
         key.unwrap()

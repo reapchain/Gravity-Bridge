@@ -5,7 +5,7 @@ use clap::Parser;
 use clarity::Address as EthAddress;
 use clarity::PrivateKey as EthPrivateKey;
 use deep_space::{address::Address as CosmosAddress, Coin};
-use deep_space::{CosmosPrivateKey, EthermintPrivateKey};
+use deep_space::EthermintPrivateKey;
 use std::path::PathBuf;
 
 /// Gravity Bridge tools (gbt) provides tools for interacting with the Althea Gravity bridge for Cosmos based blockchains.
@@ -45,7 +45,7 @@ pub enum SubCommand {
 pub struct OrchestratorOpts {
     /// Cosmos mnemonic phrase containing the tokens you would like to send
     #[clap(short, long, parse(try_from_str))]
-    pub cosmos_phrase: Option<CosmosPrivateKey>,
+    pub cosmos_phrase: Option<EthermintPrivateKey>,
     /// An Ethereum private key containing ETH to pay for fees, this will also hold the relayers earnings
     /// in the near future it will be possible to disable the Orchestrators integrated relayer
     #[clap(short, long, parse(try_from_str))]
@@ -77,7 +77,7 @@ pub struct RelayerOpts {
     /// This overrides the key set in the config, which will be used if no key is provided here.
     /// If no key is provided and no key is set in the config, this relayer will not request batches
     #[clap(long, parse(try_from_str))]
-    pub cosmos_phrase: Option<CosmosPrivateKey>,
+    pub cosmos_phrase: Option<EthermintPrivateKey>,
     /// (Optional) The Cosmos Denom and amount to pay Cosmos chain fees. If not set this relayer will not automatically
     /// request batches
     #[clap(short, long, parse(try_from_str))]
@@ -112,7 +112,7 @@ pub enum ClientSubcommand {
 pub struct CosmosToEthOpts {
     /// Cosmos mnemonic phrase containing the tokens you would like to send
     #[clap(short, long, parse(try_from_str))]
-    pub cosmos_phrase: CosmosPrivateKey,
+    pub cosmos_phrase: EthermintPrivateKey,
     /// (Optional) The Cosmos gRPC server that will be used to submit the transaction
     #[clap(long, default_value = "http://localhost:9090")]
     pub cosmos_grpc: String,
@@ -204,7 +204,7 @@ pub enum KeysSubcommand {
 pub struct RegisterOrchestratorAddressOpts {
     /// The Cosmos private key of the validator
     #[clap(short, long, parse(try_from_str))]
-    pub validator_phrase: CosmosPrivateKey,
+    pub validator_phrase: EthermintPrivateKey,
     /// (Optional) The Ethereum private key to register, will be generated if not provided
     #[clap(short, long, parse(try_from_str))]
     pub ethereum_key: Option<EthPrivateKey>,
@@ -342,7 +342,7 @@ pub struct IbcMetadataProposalOpts {
     pub cosmos_grpc: String,
     /// The phrase for an address containing enough funds to submit the proposal.
     #[clap(short, long, parse(try_from_str))]
-    pub cosmos_phrase: CosmosPrivateKey,
+    pub cosmos_phrase: EthermintPrivateKey,
     /// Path to the proposal.json
     #[clap(short, long, parse(try_from_str))]
     pub json: PathBuf,
@@ -363,7 +363,7 @@ pub struct AirdropProposalOpts {
     pub cosmos_grpc: String,
     /// The phrase for an address containing enough funds to submit the proposal.
     #[clap(short, long, parse(try_from_str))]
-    pub cosmos_phrase: CosmosPrivateKey,
+    pub cosmos_phrase: EthermintPrivateKey,
     /// Path to the proposal.json
     #[clap(short, long, parse(try_from_str))]
     pub json: PathBuf,
@@ -386,7 +386,7 @@ pub struct EmergencyBridgeHaltProposalOpts {
     pub cosmos_grpc: String,
     /// The phrase for an address containing enough funds to submit the proposal.
     #[clap(short, long, parse(try_from_str))]
-    pub cosmos_phrase: CosmosPrivateKey,
+    pub cosmos_phrase: EthermintPrivateKey,
     /// Path to the proposal.json
     #[clap(short, long, parse(try_from_str))]
     pub json: PathBuf,
@@ -409,7 +409,7 @@ pub struct OracleUnhaltProposalOpts {
     pub cosmos_grpc: String,
     /// The phrase for an address containing enough funds to submit the proposal.
     #[clap(short, long, parse(try_from_str))]
-    pub cosmos_phrase: CosmosPrivateKey,
+    pub cosmos_phrase: EthermintPrivateKey,
     /// Path to the proposal.json
     #[clap(short, long, parse(try_from_str))]
     pub json: PathBuf,

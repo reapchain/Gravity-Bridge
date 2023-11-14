@@ -1,0 +1,24 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug",
+            "program": "${workspaceFolder}/orchestrator/target/debug/gbt",
+            "args": [
+                "-a", "reap", "orchestrator"
+                , "--cosmos-phrase", "tree resist image general tunnel clip hope adapt gadget orphan limb idle advance patient tomorrow magnet worry crew ahead accuse pepper derive crunch social"
+                , "--ethereum-key", "0xcf3482af81f9f4c19c291dfde990674327016494a612662f5d97bc61275b433c"
+                , "--cosmos-grpc", "http://192.168.100.31:27200/"
+                , "--ethereum-rpc", "https://sepolia.infura.io/v3/6e7a5ddb55cc4d02b51a7d65830fca30"
+                , "--fees", "1areap"
+                , "--gravity-contract-address", "0x404Cc23ff62b8B43b19b8aFa7E4874e20c537c24"
+            ],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

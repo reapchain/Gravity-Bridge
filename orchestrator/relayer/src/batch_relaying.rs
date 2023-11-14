@@ -267,8 +267,9 @@ async fn submit_batches(
             let timeout_height: Uint256 = oldest_signed_batch.batch_timeout.into();
             if timeout_height < ethereum_block_height {
                 warn!(
-                    "Batch {}/{} has timed out and can not be submitted",
-                    oldest_signed_batch.nonce, oldest_signed_batch.token_contract
+                    "Batch {}/{} has timed out and can not be submitted. timeout_height: {}, ethereum_block_height: {} ",
+                    oldest_signed_batch.nonce, oldest_signed_batch.token_contract,
+                    timeout_height, ethereum_block_height
                 );
                 continue;
             }

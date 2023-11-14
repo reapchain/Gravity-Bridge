@@ -1,0 +1,26 @@
+=============== Jun 20, 2023 (KST) ===============
+14:35:49.397209 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+14:35:49.414405 db@open opening
+14:35:49.415146 version@stat F·[] S·0B[] Sc·[]
+14:35:49.424093 db@janitor F·2 G·0
+14:35:49.424117 db@open done T·9.692ms
+=============== Jun 20, 2023 (KST) ===============
+14:39:30.089196 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+14:39:30.089953 version@stat F·[] S·0B[] Sc·[]
+14:39:30.089980 db@open opening
+14:39:30.090213 journal@recovery F·1
+14:39:30.090290 journal@recovery recovering @1
+14:39:30.097688 memdb@flush created L0@2 N·334 S·24KiB "s/1,v263":"s/p..hts,v265"
+14:39:30.098661 version@stat F·[1] S·24KiB[24KiB] Sc·[0.25]
+14:39:30.119762 db@janitor F·3 G·0
+14:39:30.119793 db@open done T·29.801167ms
+15:16:12.588389 memdb@flush N·35051 S·3MiB
+15:16:12.621948 memdb@flush created L0@6 N·35051 S·2MiB "s/10,v899":"s/p..hts,v404"
+15:16:12.621996 version@stat F·[2] S·2MiB[2MiB] Sc·[0.50]
+15:16:12.630739 memdb@flush committed F·1 T·42.181458ms
+15:16:12.632342 journal@remove removed @3
+15:50:08.905809 memdb@flush N·34058 S·3MiB
+15:50:08.938596 memdb@flush created L0@8 N·34058 S·2MiB "s/439,v35428":"s/p..hts,v35430"
+15:50:08.938844 version@stat F·[3] S·4MiB[4MiB] Sc·[0.75]
+15:50:08.942994 memdb@flush committed F·1 T·37.038834ms
+15:50:08.943698 journal@remove removed @5

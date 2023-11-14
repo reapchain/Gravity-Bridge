@@ -17,7 +17,7 @@ use deep_space::address::Address as CosmosAddress;
 use deep_space::client::ChainStatus;
 use deep_space::coin::Coin;
 use deep_space::error::CosmosGrpcError;
-use deep_space::private_key::{CosmosPrivateKey, PrivateKey};
+use deep_space::private_key::{EthermintPrivateKey, PrivateKey};
 use deep_space::{Address, Contact, EthermintPrivateKey, Fee, Msg};
 use ethereum_gravity::utils::get_event_nonce;
 use futures::future::join_all;
@@ -171,6 +171,9 @@ pub async fn send_eth_bulk(amount: Uint256, destinations: &[EthAddress], web3: &
         .unwrap();
     let mut transactions = Vec::new();
     for address in destinations {
+        
+        info!("Send to {}, {} ", address, amount);
+
         let t = Transaction {
             to: *address,
             nonce: nonce.clone(),
@@ -249,7 +252,7 @@ pub fn get_user_key(cosmos_prefix: Option<&str>) -> BridgeUserKey {
     let eth_key = EthPrivateKey::from_slice(&secret).unwrap();
     let eth_address = eth_key.to_address();
     // the destination on cosmos that sends along to the final ethereum destination
-    let cosmos_key = CosmosPrivateKey::from_secret(&secret);
+    let cosmos_key = EthermintPrivateKey::from_secret(&secret);
     let cosmos_address = cosmos_key.to_address(cosmos_prefix).unwrap();
     let mut rng = rand::thread_rng();
     let secret: [u8; 32] = rng.gen();
@@ -273,7 +276,7 @@ pub struct BridgeUserKey {
     pub eth_key: EthPrivateKey,
     // the cosmos addresses that get the funds and send them on to the dest eth addresses
     pub cosmos_address: CosmosAddress,
-    pub cosmos_key: CosmosPrivateKey,
+    pub cosmos_key: EthermintPrivateKey,
     // the location tokens are sent back to on Ethereum
     pub eth_dest_address: EthAddress,
     pub eth_dest_key: EthPrivateKey,
@@ -314,9 +317,9 @@ pub struct ValidatorKeys {
     pub eth_key: EthPrivateKey,
     /// The Orchestrator key used by this validator to submit oracle messages and signatures
     /// to the cosmos chain
-    pub orch_key: CosmosPrivateKey,
+    pub orch_key: EthermintPrivateKey,
     /// The validator key used by this validator to actually sign and produce blocks
-    pub validator_key: CosmosPrivateKey,
+    pub validator_key: EthermintPrivateKey,
     // The mnemonic phrase used to generate validator_key
     pub validator_phrase: String,
 }

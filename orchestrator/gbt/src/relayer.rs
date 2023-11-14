@@ -4,7 +4,7 @@ use crate::config::load_keys;
 use crate::utils::print_relaying_explanation;
 use clarity::constants::ZERO_ADDRESS;
 use cosmos_gravity::query::get_gravity_params;
-use deep_space::{CosmosPrivateKey, PrivateKey};
+use deep_space::{EthermintPrivateKey, PrivateKey};
 use gravity_utils::connection_prep::check_for_fee;
 use gravity_utils::connection_prep::{
     check_for_eth, create_rpc_connections, wait_for_cosmos_node_ready,
@@ -25,7 +25,7 @@ pub async fn relayer(
     let cosmos_grpc = args.cosmos_grpc;
     let ethereum_rpc = args.ethereum_rpc;
     let ethereum_key = args.ethereum_key;
-    let cosmos_key = args.cosmos_phrase;
+    let cosmos_key: Option<deep_space::EthermintPrivateKey> = args.cosmos_phrase;
     let connections = create_rpc_connections(
         address_prefix,
         Some(cosmos_grpc),
@@ -53,12 +53,12 @@ pub async fn relayer(
         }
         k.unwrap()
     };
-    let cosmos_key = if let Some(k) = cosmos_key {
+    let cosmos_key: Option<deep_space::EthermintPrivateKey> = if let Some(k) = cosmos_key {
         Some(k)
     } else if config_exists(home_dir) {
         let keys = load_keys(home_dir);
         keys.orchestrator_phrase
-            .map(|stored_key| CosmosPrivateKey::from_phrase(&stored_key, "").unwrap())
+            .map(|stored_key| EthermintPrivateKey::from_phrase(&stored_key, "").unwrap())
     } else {
         None
     };

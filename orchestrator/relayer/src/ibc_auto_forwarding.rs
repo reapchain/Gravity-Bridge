@@ -1,7 +1,7 @@
 use cosmos_gravity::{
     query::get_all_pending_ibc_auto_forwards, send::execute_pending_ibc_auto_forwards,
 };
-use deep_space::{Coin, Contact, CosmosPrivateKey};
+use deep_space::{Coin, Contact, EthermintPrivateKey};
 use gravity_proto::gravity::query_client::QueryClient as GravityQueryClient;
 use gravity_utils::types::RelayerConfig;
 use std::time::{Duration, Instant};
@@ -15,7 +15,7 @@ use tonic::transport::Channel;
 /// in EndBlocker. Moving the IBC transfers to a queue which can be cleared in a Tx solves the issue.
 #[allow(clippy::too_many_arguments)]
 pub async fn ibc_auto_forward_loop(
-    cosmos_key: Option<CosmosPrivateKey>,
+    cosmos_key: Option<EthermintPrivateKey>,
     contact: &Contact,
     grpc_client: GravityQueryClient<Channel>,
     fee: Option<Coin>,

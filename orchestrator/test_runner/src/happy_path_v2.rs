@@ -34,11 +34,11 @@ use web30::client::Web3;
 use web30::types::SendTxOption;
 
 pub async fn happy_path_test_v2(
-    web30: &Web3,
-    grpc_client: GravityQueryClient<Channel>,
-    contact: &Contact,
+    web30: &Web3,   //ETH node
+    grpc_client: GravityQueryClient<Channel>,   // gravity client
+    contact: &Contact,  //gravity GRPC
     keys: Vec<ValidatorKeys>,
-    gravity_address: EthAddress,
+    gravity_address: EthAddress,    //contracts.gravity_contract;
     validator_out: bool,
     ibc_metadata: Option<Metadata>,
 ) {
@@ -108,10 +108,11 @@ pub async fn happy_path_test_v2(
         "Sent some {} to user address {}",
         token_to_send_to_eth, user.cosmos_address
     );
+        
     // send the user some eth, they only need this to check their
     // erc20 balance, so a pretty minor usecase
     send_one_eth(user.eth_address, web30).await;
-    info!("Sent 1 eth to user address {}", user.eth_address);
+    info!("Sent 1 eth to user address {}, pvkey {}", user.eth_address, user.eth_key);
 
     let success = send_to_eth_and_confirm(
         web30,

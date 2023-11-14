@@ -12,11 +12,19 @@ ADD https://github.com/cosmos/gaia/releases/download/v7.0.0/gaiad-v7.0.0-linux-a
 ADD https://github.com/informalsystems/ibc-rs/releases/download/v0.13.0/hermes-v0.13.0-x86_64-unknown-linux-gnu.tar.gz /tmp/
 RUN cd /tmp/ && tar -xvf hermes-v0.13.0-x86_64-unknown-linux-gnu.tar.gz && mv hermes /usr/bin/
 RUN mkdir /ibc-relayer-logs && touch /ibc-relayer-logs/hermes-logs && touch /ibc-relayer-logs/channel-creation
+
+# Install Rust
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain 1.61.0 -y
+ENV PATH=/root/.cargo/bin:$PATH
+
+# Switch Rust to the nightly bui
+RUN rustup toolchain install nightly
+
 # the actual source code for this repo, this **only** includes checked in files!
 # this is a bit of a pain but it does speed things up a lot
-ADD gravity.tar.gz /
+COPY gravity /gravity
 # build the test runner specifically to cache a release artifact
-RUN pushd /gravity/orchestrator/test_runner && PATH=$PATH:$HOME/.cargo/bin cargo build --bin test-runner --release
+RUN pushd /gravity/orchestrator/test_runner && PATH=$PATH:$HOME/.cargo/bin cargo +nightly build --bin test-runner --release -Z sparse-registry
 RUN pushd /gravity/module/ && PATH=$PATH:/usr/local/go/bin GOPROXY=https://proxy.golang.org make && PATH=$PATH:/usr/local/go/bin make install
 RUN pushd /gravity/solidity/ && HUSKY_SKIP_INSTALL=1 npm install && npm run typechain
 RUN git config --global --add safe.directory /gravity

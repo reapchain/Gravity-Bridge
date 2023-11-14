@@ -7,7 +7,7 @@ use crate::utils::{check_cosmos_balances, get_user_key, submit_false_claims, Val
 use crate::OPERATION_TIMEOUT;
 use crate::{get_fee, MINER_ADDRESS};
 use clarity::{Address as EthAddress, Uint256};
-use deep_space::private_key::CosmosPrivateKey;
+use deep_space::private_key::EthermintPrivateKey;
 use deep_space::{Coin, Contact, Fee};
 use gravity_proto::gravity::query_client::QueryClient as GravityQueryClient;
 use gravity_proto::gravity::QueryErc20ToDenomRequest;
@@ -27,7 +27,7 @@ pub async fn deposit_overflow_test(
     grpc_client: GravityQueryClient<Channel>,
 ) {
     let mut grpc_client = grpc_client;
-    let orchestrator_keys: Vec<CosmosPrivateKey> =
+    let orchestrator_keys: Vec<EthermintPrivateKey> =
         keys.clone().into_iter().map(|key| key.orch_key).collect();
     ///////////////////// SETUP /////////////////////
     let user_keys = get_user_key(None);

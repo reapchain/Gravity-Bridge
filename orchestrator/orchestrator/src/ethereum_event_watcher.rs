@@ -6,7 +6,7 @@ use cosmos_gravity::{query::get_last_event_nonce_for_validator, send::send_ether
 use deep_space::Contact;
 use deep_space::{
     coin::Coin,
-    private_key::{CosmosPrivateKey, PrivateKey},
+    private_key::{EthermintPrivateKey, PrivateKey},
 };
 use gravity_proto::gravity::query_client::QueryClient as GravityQueryClient;
 use gravity_utils::get_with_retry::get_net_version_with_retry;
@@ -37,7 +37,7 @@ pub async fn check_for_events(
     contact: &Contact,
     grpc_client: &mut GravityQueryClient<Channel>,
     gravity_contract_address: EthAddress,
-    our_private_key: CosmosPrivateKey,
+    our_private_key: EthermintPrivateKey,
     fee: Coin,
     starting_block: Uint256,
 ) -> Result<CheckedNonces, GravityError> {
@@ -292,13 +292,15 @@ pub async fn get_latest_safe_block(web3: &Web3) -> Uint256 {
     let net_version = get_net_version_with_retry(web3).await;
     let block_number = get_block_number_with_retry(web3).await;
 
+    // info!("net_version: {}, Block Number: {}", net_version, block_number);
+
     match net_version {
         // Mainline Ethereum, Ethereum classic, or the Ropsten, Kotti, Mordor testnets
         // all Ethereum proof of stake Chains
         1 | 3 | 6 | 7 => get_finalized_block_with_retry(web3).await,
         // Dev, our own Gravity Ethereum testnet, and Hardhat respectively
         // all single signer chains with no chance of any reorgs
-        2018 | 15 | 31337 => block_number,
+        2018 | 15 | 31337 | 11155111 => block_number,
         // Rinkeby and Goerli use Clique (POA) Consensus, finality takes
         // up to num validators blocks. Number is higher than Ethereum based
         // on experience with operational issues

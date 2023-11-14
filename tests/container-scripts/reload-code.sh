@@ -13,7 +13,7 @@ pkill geth || true # allowed to fail
 # Wipe filesystem changes
 for i in $(seq 1 $NODES);
 do
-    rm -rf "/validator$i"
+    rm -rf "~/bridge/validator$i"
 done
 
 
@@ -28,14 +28,14 @@ tests/container-scripts/run-testnet.sh $NODES $TEST_TYPE $ALCHEMY_ID
 
 # Setup relayer files to avoid permissions issues later
 set +e
-mkdir /ibc-relayer-logs
-touch /ibc-relayer-logs/hermes-logs
-touch /ibc-relayer-logs/channel-creation
+mkdir /Users/eddy/bridge/ibc-relayer-logs
+touch /Users/eddy/bridge/ibc-relayer-logs/hermes-logs
+touch /Users/eddy/bridge/ibc-relayer-logs/channel-creation
 set -e
 
 # deploy the ethereum contracts
 pushd /gravity/orchestrator/test_runner
-DEPLOY_CONTRACTS=1 RUST_BACKTRACE=full TEST_TYPE=$TEST_TYPE NO_GAS_OPT=1 RUST_LOG="INFO,relayer=DEBUG,orchestrator=DEBUG" PATH=$PATH:$HOME/.cargo/bin cargo run --release --bin test-runner
+DEPLOY_CONTRACTS=1 RUST_BACKTRACE=full TEST_TYPE=$TEST_TYPE NO_GAS_OPT=1 RUST_LOG="INFO,relayer=DEBUG,orchestrator=DEBUG" PATH=$PATH:$HOME/.cargo/bin cargo +nightly run --release --bin test-runner -Z sparse-registry
 
 # This keeps the script open to prevent Docker from stopping the container
 # immediately if the nodes are killed by a different process
