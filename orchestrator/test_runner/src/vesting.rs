@@ -2,7 +2,7 @@ use crate::{CosmosAddress, ADDRESS_PREFIX, COSMOS_NODE_GRPC, STAKING_TOKEN};
 use cosmos_gravity::utils::{get_current_cosmos_height, historical_grpc_query};
 use deep_space::client::types::AccountType;
 use deep_space::error::CosmosGrpcError;
-use deep_space::{Contact, CosmosPrivateKey, PrivateKey};
+use deep_space::{Contact, EthermintPrivateKey, PrivateKey};
 use gravity_proto::cosmos_sdk_proto::cosmos::bank::v1beta1::query_client::QueryClient as BankQueryClient;
 use gravity_proto::cosmos_sdk_proto::cosmos::bank::v1beta1::QuerySpendableBalancesRequest;
 use gravity_proto::cosmos_sdk_proto::cosmos::base::v1beta1::Coin;
@@ -13,7 +13,7 @@ use tokio::time::sleep;
 use tonic::transport::Channel;
 
 /// Tests that vesting accounts receive the funds they should by querying their Spendable Balances
-pub async fn vesting_test(contact: &Contact, vesting_keys: Vec<CosmosPrivateKey>) {
+pub async fn vesting_test(contact: &Contact, vesting_keys: Vec<EthermintPrivateKey>) {
     let vesting_addrs: Vec<CosmosAddress> = vesting_keys
         .into_iter()
         .map(|k| k.to_address(&ADDRESS_PREFIX).expect("Invalid vesting key!"))

@@ -7,7 +7,7 @@ use clarity::{Address as EthAddress, Uint256};
 use cosmos_gravity::proposals::submit_unhalt_bridge_proposal;
 use cosmos_gravity::query::{get_attestations, get_last_event_nonce_for_validator};
 use deep_space::address::Address as CosmosAddress;
-use deep_space::private_key::{CosmosPrivateKey, PrivateKey};
+use deep_space::private_key::{EthermintPrivateKey, PrivateKey};
 use deep_space::{Contact, Fee};
 use gravity_proto::gravity::query_client::QueryClient as GravityQueryClient;
 use gravity_proto::gravity::MsgSendToCosmosClaim;
@@ -52,7 +52,7 @@ pub async fn unhalt_bridge_test(
     };
 
     start_orchestrators(keys.clone(), gravity_address, false, no_relay_market_config).await;
-    let lying_validators: Vec<CosmosPrivateKey> =
+    let lying_validators: Vec<EthermintPrivateKey> =
         keys[1..3].iter().map(|key| key.orch_key).collect();
 
     print_validator_stake(contact).await;

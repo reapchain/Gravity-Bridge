@@ -12,7 +12,7 @@ use cosmos_gravity::send::send_to_eth;
 use cosmos_gravity::{query::get_oldest_unsigned_transaction_batches, send::send_ethereum_claims};
 use deep_space::address::Address as CosmosAddress;
 use deep_space::coin::Coin;
-use deep_space::private_key::{CosmosPrivateKey, PrivateKey};
+use deep_space::private_key::{EthermintPrivateKey, PrivateKey};
 use deep_space::Contact;
 use ethereum_gravity::utils::get_valset_nonce;
 use ethereum_gravity::{send_to_cosmos::send_to_cosmos, utils::get_tx_batch_nonce};
@@ -214,7 +214,7 @@ pub async fn test_valset_update(
             delegate_address,
             amount,
             get_fee(None),
-            keys[1].validator_key,
+            keys[1].validator_key,  // 노드를 1개만 돌릴 때, 0으로 하면 돌아는 가는데 맞는지 모르겠음!?
             Some(TOTAL_TIMEOUT),
         )
         .await
@@ -504,8 +504,8 @@ async fn test_batch(
     web30: &Web3,
     dest_eth_address: EthAddress,
     gravity_address: EthAddress,
-    requester_cosmos_private_key: CosmosPrivateKey,
-    dest_cosmos_private_key: CosmosPrivateKey,
+    requester_cosmos_private_key: EthermintPrivateKey,
+    dest_cosmos_private_key: EthermintPrivateKey,
     erc20_contract: EthAddress,
 ) {
     get_valset_nonce(gravity_address, *MINER_ADDRESS, web30)

@@ -3,7 +3,7 @@ use crate::{happy_path_test, happy_path_test_v2, utils::*};
 use clarity::Address as EthAddress;
 use deep_space::client::ChainStatus;
 use deep_space::utils::decode_any;
-use deep_space::{Contact, CosmosPrivateKey};
+use deep_space::{Contact, EthermintPrivateKey};
 use gravity_proto::cosmos_sdk_proto::cosmos::bank::v1beta1::Metadata;
 use gravity_proto::gravity::query_client::{QueryClient as GravityQueryClient, QueryClient};
 use gravity_proto::gravity::{
@@ -42,7 +42,7 @@ pub async fn upgrade_part_1(
     contact: &Contact,
     grpc_client: GravityQueryClient<Channel>,
     keys: Vec<ValidatorKeys>,
-    ibc_keys: Vec<CosmosPrivateKey>,
+    ibc_keys: Vec<EthermintPrivateKey>,
     gravity_address: EthAddress,
     erc20_addresses: Vec<EthAddress>,
 ) {
@@ -103,7 +103,7 @@ pub async fn upgrade_part_2(
     contact: &Contact,
     grpc_client: GravityQueryClient<Channel>,
     keys: Vec<ValidatorKeys>,
-    ibc_keys: Vec<CosmosPrivateKey>,
+    ibc_keys: Vec<EthermintPrivateKey>,
     gravity_address: EthAddress,
     erc20_addresses: Vec<EthAddress>,
 ) {
@@ -240,7 +240,7 @@ pub async fn run_upgrade_specific_tests(
     _contact: &Contact,
     _grpc_client: GravityQueryClient<Channel>,
     _keys: Vec<ValidatorKeys>,
-    _ibc_keys: Vec<CosmosPrivateKey>,
+    _ibc_keys: Vec<EthermintPrivateKey>,
     _gravity_address: EthAddress,
     _erc20_addresses: Vec<EthAddress>,
     _post_upgrade: bool,

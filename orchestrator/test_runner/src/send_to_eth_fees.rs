@@ -13,7 +13,7 @@ use cosmos_gravity::proposals::{submit_send_to_eth_fees_proposal, SendToEthFeesP
 use cosmos_gravity::query::get_min_chain_fee_basis_points;
 use cosmos_gravity::send::MSG_SEND_TO_ETH_TYPE_URL;
 use cosmos_gravity::utils::get_min_send_to_eth_fee;
-use deep_space::{Coin, Contact, CosmosPrivateKey, Fee, MessageArgs, Msg, PrivateKey};
+use deep_space::{Coin, Contact, EthermintPrivateKey, Fee, MessageArgs, Msg, PrivateKey};
 use gravity_proto::cosmos_sdk_proto::cosmos::bank::v1beta1::Metadata;
 use gravity_proto::gravity::{query_client::QueryClient as GravityQueryClient, MsgSendToEth};
 use gravity_utils::num_conversion::one_atom;
@@ -286,7 +286,7 @@ pub struct SendToEthFeeExpectations {
 /// the current gravity params
 pub async fn send_to_eth_one_msg_txs(
     contact: &Contact,
-    sender: CosmosPrivateKey,
+    sender: EthermintPrivateKey,
     receiver: EthAddress,
     erc20_denom: String,
     cosmos_denom: String,
@@ -371,7 +371,7 @@ pub async fn send_to_eth_one_msg_txs(
 #[allow(clippy::too_many_arguments)]
 async fn send_single_msg_txs(
     contact: &Contact,
-    sender: CosmosPrivateKey,
+    sender: EthermintPrivateKey,
     sender_addr: String,
     receiver: EthAddress,
     denom: String,
@@ -423,7 +423,7 @@ async fn send_single_msg_txs(
 /// the current gravity params
 pub async fn send_to_eth_multi_msg_txs(
     contact: &Contact,
-    sender: CosmosPrivateKey,
+    sender: EthermintPrivateKey,
     receiver: EthAddress,
     erc20_denom: String,
     cosmos_denom: String,
@@ -533,7 +533,7 @@ async fn send_multi_msg_txs(
     msgs: &mut Vec<Msg>,
     tx_sizes: &Vec<usize>,
     tx_idx: &mut usize,
-    sender: CosmosPrivateKey,
+    sender: EthermintPrivateKey,
     sender_addr: String,
     receiver: EthAddress,
     denom: String,
@@ -601,7 +601,7 @@ async fn send_multi_msg_txs(
 pub async fn send_to_eth_while_changing_params(
     contact: &Contact,
     keys: &[ValidatorKeys],
-    sender: CosmosPrivateKey,
+    sender: EthermintPrivateKey,
     receiver: EthAddress,
     erc20_denom: String,
     cosmos_denom: String,

@@ -29,7 +29,7 @@ use clarity::{Address as EthAddress, Uint256};
 use deep_space::coin::Coin;
 use deep_space::Address as CosmosAddress;
 use deep_space::Contact;
-use deep_space::{CosmosPrivateKey, PrivateKey};
+use deep_space::{EthermintPrivateKey, PrivateKey};
 use erc_721_happy_path::erc721_happy_path_test;
 use evidence_based_slashing::evidence_based_slashing;
 use gravity_proto::gravity::query_client::QueryClient as GravityQueryClient;
@@ -79,7 +79,7 @@ const OPERATION_TIMEOUT: Duration = Duration::from_secs(30);
 /// the timeout for the total system
 const TOTAL_TIMEOUT: Duration = Duration::from_secs(300);
 // The config file location for hermes
-const HERMES_CONFIG: &str = "/gravity/tests/assets/ibc-relayer-config.toml";
+const HERMES_CONFIG: &str = "/Users/eddy/Workspace/reapchain/bridge/Gravity-Bridge/tests/assets/ibc-relayer-config.toml";
 
 // Retrieve values from runtime ENV vars
 lazy_static! {
@@ -103,11 +103,11 @@ lazy_static! {
     static ref IBC_NODE_GRPC: String =
         env::var("IBC_NODE_GRPC").unwrap_or_else(|_| "http://localhost:9190".to_owned());
     static ref IBC_NODE_ABCI: String =
-        env::var("IBC_NODE_ABCI").unwrap_or_else(|_| "http://localhost:27657".to_owned());
+        env::var("IBC_NODE_ABCI").unwrap_or_else(|_| "http://localhost:36657".to_owned());
 
     // LOCAL ETHEREUM CONSTANTS
     static ref ETH_NODE: String =
-        env::var("ETH_NODE").unwrap_or_else(|_| "http://localhost:8545".to_owned());
+        env::var("ETH_NODE").unwrap_or_else(|_| "http://127.0.0.1:8545".to_owned());
 }
 
 /// this value reflects the contents of /tests/container-scripts/setup-validator.sh
@@ -129,7 +129,7 @@ lazy_static! {
     // this is the key the IBC relayer will use to send IBC messages and channel updates
     // it's a distinct address to prevent sequence collisions
     static ref RELAYER_MNEMONIC: String = "below great use captain upon ship tiger exhaust orient burger network uphold wink theory focus cloud energy flavor recall joy phone beach symptom hobby".to_string();
-    static ref RELAYER_PRIVATE_KEY: CosmosPrivateKey = CosmosPrivateKey::from_phrase(&RELAYER_MNEMONIC, "").unwrap();
+    static ref RELAYER_PRIVATE_KEY: EthermintPrivateKey = EthermintPrivateKey::from_phrase(&RELAYER_MNEMONIC, "").unwrap();
     static ref RELAYER_ADDRESS: CosmosAddress = RELAYER_PRIVATE_KEY.to_address(ADDRESS_PREFIX.as_str()).unwrap();
 }
 
@@ -219,6 +219,10 @@ pub async fn main() {
         return;
     }
 
+    deploy_contracts(&contact).await;
+
+    info!("##### End deploy_contracts #######");
+
     let contracts = parse_contract_addresses();
     // the address of the deployed Gravity contract
     let gravity_address = contracts.gravity_contract;
@@ -231,6 +235,7 @@ pub async fn main() {
     // before we start the orchestrators send them some funds so they can pay
     // for things
     send_eth_to_orchestrators(&keys, &web30).await;
+
 
     // assert that the validators have a balance of the footoken we use
     // for test transfers
@@ -246,6 +251,7 @@ pub async fn main() {
         .unwrap()
         .is_some());
 
+    info!("##### start_ibc_relayer #######");
     start_ibc_relayer(&contact, &keys, &ibc_phrases).await;
 
     // This segment contains optional tests, by default we run a happy path test

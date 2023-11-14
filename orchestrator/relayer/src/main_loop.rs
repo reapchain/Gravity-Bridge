@@ -10,7 +10,7 @@ use crate::{
 };
 use clarity::address::Address as EthAddress;
 use clarity::PrivateKey as EthPrivateKey;
-use deep_space::{Coin, Contact, CosmosPrivateKey};
+use deep_space::{Coin, Contact, EthermintPrivateKey};
 use futures::future::join3;
 use gravity_proto::gravity::query_client::QueryClient as GravityQueryClient;
 use gravity_utils::num_conversion::print_gwei;
@@ -28,7 +28,7 @@ pub const ETH_SUBMIT_WAIT_TIME: Duration = Duration::from_secs(600);
 /// bundles the relayer_main_loop, ibc_auto_forward_loop, and gas_tracker_loop together into a single future
 #[allow(clippy::too_many_arguments)]
 pub async fn all_relayer_loops(
-    cosmos_key: Option<CosmosPrivateKey>,
+    cosmos_key: Option<EthermintPrivateKey>,
     ethereum_key: EthPrivateKey,
     web3: Web3,
     contact: Contact,
@@ -76,7 +76,7 @@ pub async fn all_relayer_loops(
 #[allow(clippy::too_many_arguments)]
 pub async fn relayer_main_loop(
     ethereum_key: EthPrivateKey,
-    cosmos_key: Option<CosmosPrivateKey>,
+    cosmos_key: Option<EthermintPrivateKey>,
     cosmos_fee: Option<Coin>,
     web3: Web3,
     contact: Contact,
@@ -133,7 +133,7 @@ pub async fn relayer_main_loop(
 #[allow(clippy::too_many_arguments)]
 pub async fn single_relayer_iteration(
     ethereum_key: EthPrivateKey,
-    cosmos_key: Option<CosmosPrivateKey>,
+    cosmos_key: Option<EthermintPrivateKey>,
     cosmos_fee: Option<Coin>,
     contact: &Contact,
     web3: &Web3,

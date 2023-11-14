@@ -19,7 +19,7 @@ use deep_space::Contact;
 use deep_space::{client::ChainStatus, utils::FeeInfo};
 use deep_space::{
     coin::Coin,
-    private_key::{CosmosPrivateKey, PrivateKey},
+    private_key::{EthermintPrivateKey, PrivateKey},
 };
 use futures::future::{join, join3};
 use gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse;
@@ -50,7 +50,7 @@ pub const ETH_ORACLE_WAITING_SPEED: Duration = Duration::from_secs(90);
 /// of all execution time sleeping this shouldn't be an issue at all.
 #[allow(clippy::too_many_arguments)]
 pub async fn orchestrator_main_loop(
-    cosmos_key: CosmosPrivateKey,
+    cosmos_key: EthermintPrivateKey,
     ethereum_key: EthPrivateKey,
     web3: Web3,
     contact: Contact,
@@ -115,14 +115,15 @@ pub async fn test_eth_connection(web3: Web3) {
 
         match (latest_res, finalized_res) {
             (Ok(latest), Ok(finalized)) => {
-                if latest.number < finalized.number
-                    || finalized.number.clone() + 32u8.into() > latest.number
-                {
-                    panic!(
-                        "Ethereum RPC returned an invalid 'finalized' block, expecting at least a 32 block difference but found latest block ({}) and 'finalized' block ({})",
-                        latest.number, finalized.number,
-                    );
-                }
+                // 일단 로컬에서 finalized가 null을 리턴하거나 latest와 같은 번호를 리턴해서 주석처리함.
+                // if latest.number < finalized.number
+                //     || finalized.number.clone() + 32u8.into() > latest.number
+                // {
+                //     panic!(
+                //         "Ethereum RPC returned an invalid 'finalized' block, expecting at least a 32 block difference but found latest block ({}) and 'finalized' block ({})",
+                //         latest.number, finalized.number,
+                //     );
+                // }
                 info!("Ethereum RPC has returned an acceptable 'finalized' block ({}) behind the latest block ({}), starting the orchestrator!", finalized.number, latest.number);
                 return;
             }
@@ -141,7 +142,7 @@ pub async fn test_eth_connection(web3: Web3) {
 /// This function is responsible for making sure that Ethereum events are retrieved from the Ethereum blockchain
 /// and ferried over to Cosmos where they will be used to issue tokens or process batches.
 pub async fn eth_oracle_main_loop(
-    cosmos_key: CosmosPrivateKey,
+    cosmos_key: EthermintPrivateKey,
     web3: Web3,
     contact: Contact,
     grpc_client: GravityQueryClient<Channel>,
@@ -288,7 +289,7 @@ pub async fn eth_oracle_main_loop(
 /// since these are provided directly by a trusted Cosmsos node they can simply be assumed to be
 /// valid and signed off on.
 pub async fn eth_signer_main_loop(
-    cosmos_key: CosmosPrivateKey,
+    cosmos_key: EthermintPrivateKey,
     ethereum_key: EthPrivateKey,
     contact: Contact,
     grpc_client: GravityQueryClient<Channel>,

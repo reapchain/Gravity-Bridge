@@ -290,7 +290,7 @@ pub async fn check_delegate_addresses(
                 error!("Your Delegate Orchestrator address is incorrect!");
                 error!(
                     "You provided {}  Correct Value {}",
-                    delegate_eth_address, req_delegate_eth_address
+                    delegate_orchestrator_address, req_delegate_orchestrator_address
                 );
                 error!("In order to resolve this issue locate the key phrase you registered for this validator and run the following command");
                 error!("`gbt keys set-orchestrator-key --phrase \"orchestrator key phrase\"`");
@@ -314,6 +314,7 @@ pub async fn check_delegate_addresses(
         }
         (Ok(_), Err(e)) => {
             error!("Your Gravity Orchestrator Cosmos key is incorrect, please double check your phrase. If you can't locate the correct phrase you will need to create a new validator {:?}", e);
+            error!("Your key: {:?}", delegate_orchestrator_address.to_bech32(prefix).unwrap());
             error!("If you are seeing this error please read this documentation carefully https://github.com/Gravity-Bridge/Gravity-Docs/blob/main/docs/setting-up-a-validator.md#generate-your-delegate-keys");
             exit(1);
         }

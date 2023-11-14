@@ -14,7 +14,7 @@ use std::process::exit;
 use tonic::transport::Channel;
 
 pub async fn cosmos_to_eth_cmd(args: CosmosToEthOpts, address_prefix: String) {
-    let cosmos_key = args.cosmos_phrase;
+    let cosmos_key: deep_space::EthermintPrivateKey = args.cosmos_phrase;
     let gravity_coin = args.amount;
     let fee = args.fee;
     let cosmos_grpc = args.cosmos_grpc;
@@ -37,8 +37,8 @@ pub async fn cosmos_to_eth_cmd(args: CosmosToEthOpts, address_prefix: String) {
         cosmos_address,
         gravity_coin,
         fee,
-        bridge_fee,
         chain_fee,
+        bridge_fee,
         eth_dest,
     )
     .await;

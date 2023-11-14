@@ -12,7 +12,7 @@ use crate::{get_gravity_chain_id, get_ibc_chain_id, ETH_NODE};
 use crate::{utils::ValidatorKeys, COSMOS_NODE_ABCI};
 use clarity::Address as EthAddress;
 use clarity::PrivateKey as EthPrivateKey;
-use deep_space::private_key::{CosmosPrivateKey, PrivateKey, DEFAULT_COSMOS_HD_PATH};
+use deep_space::private_key::{EthermintPrivateKey, PrivateKey, DEFAULT_COSMOS_HD_PATH};
 use deep_space::Contact;
 use ibc::core::ics24_host::identifier::ChainId;
 use ibc_relayer::config::AddressType;
@@ -29,7 +29,7 @@ use std::{
 /// and dumped into a file /validator-eth-keys in the container, from there they are then used by
 /// the orchestrator on startup
 pub fn parse_ethereum_keys() -> Vec<EthPrivateKey> {
-    let filename = "/validator-eth-keys";
+    let filename = "/Users/eddy/bridge/validator-eth-keys";
     let file = File::open(filename).expect("Failed to find eth keys");
     let reader = BufReader::new(file);
     let mut ret = Vec::new();
@@ -46,7 +46,7 @@ pub fn parse_ethereum_keys() -> Vec<EthPrivateKey> {
 }
 
 /// Parses the output of the cosmoscli keys add command to import the private key
-fn parse_phrases(filename: &str) -> (Vec<CosmosPrivateKey>, Vec<String>) {
+fn parse_phrases(filename: &str) -> (Vec<EthermintPrivateKey>, Vec<String>) {
     let file = File::open(filename).expect("Failed to find phrases");
     let reader = BufReader::new(file);
     let mut ret_keys = Vec::new();
@@ -60,7 +60,7 @@ fn parse_phrases(filename: &str) -> (Vec<CosmosPrivateKey>, Vec<String>) {
         {
             continue;
         }
-        let key = CosmosPrivateKey::from_phrase(&phrase, "").expect("Bad phrase!");
+        let key = EthermintPrivateKey::from_phrase(&phrase, "").expect("Bad phrase!");
         ret_keys.push(key);
         ret_phrases.push(phrase);
     }
@@ -74,16 +74,16 @@ fn parse_phrases(filename: &str) -> (Vec<CosmosPrivateKey>, Vec<String>) {
 /// the phrases are in increasing order, so validator 1 is the first key
 /// and so on. While validators may later fail to start it is guaranteed
 /// that we have one key for each validator in this file.
-pub fn parse_validator_keys() -> (Vec<CosmosPrivateKey>, Vec<String>) {
-    let filename = "/validator-phrases";
+pub fn parse_validator_keys() -> (Vec<EthermintPrivateKey>, Vec<String>) {
+    let filename = "/Users/eddy/bridge/validator-phrases";
     info!("Reading mnemonics from {}", filename);
     parse_phrases(filename)
 }
 
 /// The same as parse_validator_keys() except for a second chain accessed
 /// over IBC for testing purposes
-pub fn parse_ibc_validator_keys() -> (Vec<CosmosPrivateKey>, Vec<String>) {
-    let filename = "/ibc-validator-phrases";
+pub fn parse_ibc_validator_keys() -> (Vec<EthermintPrivateKey>, Vec<String>) {
+    let filename = "/Users/eddy/bridge/ibc-validator-phrases";
     info!("Reading mnemonics from {}", filename);
     parse_phrases(filename)
 }
@@ -91,8 +91,8 @@ pub fn parse_ibc_validator_keys() -> (Vec<CosmosPrivateKey>, Vec<String>) {
 /// Orchestrator private keys are generated via the gravity key add
 /// command just like the validator keys themselves and stored in a
 /// similar file /orchestrator-phrases
-pub fn parse_orchestrator_keys() -> Vec<CosmosPrivateKey> {
-    let filename = "/orchestrator-phrases";
+pub fn parse_orchestrator_keys() -> Vec<EthermintPrivateKey> {
+    let filename = "/Users/eddy/bridge/orchestrator-phrases";
     info!("Reading orchestrator phrases from {}", filename);
     let (orch_keys, _) = parse_phrases(filename);
     orch_keys
@@ -101,8 +101,8 @@ pub fn parse_orchestrator_keys() -> Vec<CosmosPrivateKey> {
 /// Vesting private keys are generated via the gravity key add
 /// command just like the validator keys themselves and stored in a
 /// similar file /vesting-phrases
-pub fn parse_vesting_keys() -> Vec<CosmosPrivateKey> {
-    let filename = "/vesting-phrases";
+pub fn parse_vesting_keys() -> Vec<EthermintPrivateKey> {
+    let filename = "/Users/eddy/bridge/vesting-phrases";
     info!("Reading vesting phrases from {}", filename);
     let (vest_keys, _) = parse_phrases(filename);
     vest_keys
@@ -134,6 +134,7 @@ pub fn get_keys() -> Vec<ValidatorKeys> {
 /// the Ethereum test chain starts in the testing environment. We write
 /// the stdout of this to a file for later test runs to parse
 pub async fn deploy_contracts(contact: &Contact) {
+    info!("### Start deploy_contracts");
     // prevents the node deployer from failing (rarely) when the chain has not
     // yet produced the next block after submitting each eth address
     contact.wait_for_next_block(TOTAL_TIMEOUT).await.unwrap();
@@ -146,16 +147,16 @@ pub async fn deploy_contracts(contact: &Contact) {
     const A: [&str; 3] = ["contract-deployer", "Gravity.json", "GravityERC721.json"];
     // files are placed in a root /solidity/ folder
     const B: [&str; 3] = [
-        "/solidity/contract-deployer",
-        "/solidity/Gravity.json",
-        "/solidity/GravityERC721.json",
+        "/Users/eddy/bridge/solidity/contract-deployer",
+        "/Users/eddy/bridge/solidity/Gravity.json",
+        "/Users/eddy/bridge/solidity/GravityERC721.json",
     ];
     // the default unmoved locations for the Gravity repo
     const C: [&str; 4] = [
-        "/gravity/solidity/contract-deployer.ts",
-        "/gravity/solidity/artifacts/contracts/Gravity.sol/Gravity.json",
-        "/gravity/solidity/artifacts/contracts/GravityERC721.sol/GravityERC721.json",
-        "/gravity/solidity/",
+        "/Users/eddy/Workspace/reapchain/bridge/Gravity-Bridge/solidity/contract-deployer.ts",
+        "/Users/eddy/Workspace/reapchain/bridge/Gravity-Bridge/solidity/artifacts/contracts/Gravity.sol/Gravity.json",
+        "/Users/eddy/Workspace/reapchain/bridge/Gravity-Bridge/solidity/artifacts/contracts/GravityERC721.sol/GravityERC721.json",
+        "/Users/eddy/Workspace/reapchain/bridge/Gravity-Bridge/solidity/",
     ];
     let output = if all_paths_exist(&A) || all_paths_exist(&B) {
         let paths = return_existing(A, B);
@@ -194,7 +195,7 @@ pub async fn deploy_contracts(contact: &Contact) {
     if !ExitStatus::success(&output.status) {
         panic!("Contract deploy failed!")
     }
-    let mut file = File::create("/contracts").unwrap();
+    let mut file = File::create("/Users/eddy/bridge/contracts").unwrap();
     file.write_all(&output.stdout).unwrap();
 }
 
@@ -210,7 +211,7 @@ pub struct BootstrapContractAddresses {
 /// in deploy_contracts()
 pub fn parse_contract_addresses() -> BootstrapContractAddresses {
     let mut file =
-        File::open("/contracts").expect("Failed to find contracts! did they not deploy?");
+        File::open("/Users/eddy/bridge/contracts").expect("Failed to find contracts! did they not deploy?");
     let mut output = String::new();
     file.read_to_string(&mut output).unwrap();
     let mut maybe_gravity_address = None;
@@ -320,7 +321,7 @@ pub fn create_ibc_channel(hermes_base: &mut Command) {
 
     let out_file = File::options()
         .write(true)
-        .open("/ibc-relayer-logs/channel-creation")
+        .open("/Users/eddy/bridge/ibc-relayer-logs/channel-creation")
         .unwrap()
         .into_raw_fd();
     unsafe {
@@ -343,7 +344,7 @@ pub fn run_ibc_relayer(hermes_base: &mut Command, full_scan: bool) {
     }
     let out_file = File::options()
         .write(true)
-        .open("/ibc-relayer-logs/hermes-logs")
+        .open("/Users/eddy/bridge/ibc-relayer-logs/hermes-logs")
         .unwrap()
         .into_raw_fd();
     unsafe {
