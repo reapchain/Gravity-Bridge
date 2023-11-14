@@ -141,6 +141,8 @@ message Params {
   // from Ethereum to the bridge
   repeated string ethereum_blacklist = 19;
   uint64 min_chain_fee_basis_points = 20;
+  bool enable_slash = 21;
+  string min_bridge_fee = 22;
 }
 
 // GenesisState struct, containing all persistant data required by the Gravity module
@@ -158,6 +160,7 @@ message GenesisState {
   repeated ERC20ToDenom              erc20_to_denoms     = 11 [(gogoproto.nullable) = false];
   repeated OutgoingTransferTx        unbatched_transfers = 12 [(gogoproto.nullable) = false];
   repeated PendingIbcAutoForward     pending_ibc_auto_forwards = 13 [(gogoproto.nullable) = false];
+  string default_erc20_contract_address = 14;
 }
 
 // GravityCounters contains the many noces and counters required to maintain the bridge state in the genesis

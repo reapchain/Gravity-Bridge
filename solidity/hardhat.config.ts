@@ -3,6 +3,9 @@ import "hardhat-gas-reporter";
 import "hardhat-typechain";
 import { task } from "hardhat/config";
 
+require("@nomiclabs/hardhat-ganache");
+//require("@nomicfoundation/hardhat-toolbox");
+
 task("accounts", "Prints the list of accounts", async (args, hre) => {
   const accounts = await hre.ethers.getSigners();
 
@@ -21,6 +24,10 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 //   }
 // });
 
+
+const INFURA_API_KEY = "6e7a5ddb55cc4d02b51a7d65830fca30";
+const SEPOLIA_PRIVATE_KEY = "7fde2ff45e148d3f41e0797bb25dc3b2c0dc5d6f9664d4350c24a5cf3832ed48";
+
 // You have to export an object to set up your config
 // This object can have the following optional entries:
 // defaultNetwork, networks, solc, and paths.
@@ -36,7 +43,12 @@ module.exports = {
     }
   },
   networks: {
+    sepolia: {
+        url: `https://sepolia.infura.io/v3/${INFURA_API_KEY}`,
+        accounts: [SEPOLIA_PRIVATE_KEY]
+    },
     hardhat: {
+      initialBaseFeePerGas: 0,
       mining: {
         auto: false,
         interval: [3000, 6000]
@@ -830,6 +842,10 @@ module.exports = {
         }
       ]
     }
+
+
+
+
   },
   typechain: {
     outDir: "typechain",

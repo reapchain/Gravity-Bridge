@@ -11,7 +11,7 @@ bash /gravity/tests/container-scripts/run-testnet.sh $NODES $TEST_TYPE $ALCHEMY_
 
 # deploy the ethereum contracts
 pushd /gravity/orchestrator/test_runner
-DEPLOY_CONTRACTS=1 RUST_BACKTRACE=full RUST_LOG="INFO,relayer=DEBUG,orchestrator=DEBUG" PATH=$PATH:$HOME/.cargo/bin cargo run --release --bin test-runner
+DEPLOY_CONTRACTS=1 RUST_BACKTRACE=full RUST_LOG="INFO,relayer=DEBUG,orchestrator=DEBUG" PATH=$PATH:$HOME/.cargo/bin cargo +nightly run --release --bin test-runner -Z sparse-registry
 
 echo "Running ibc relayer in the background, directing output to /ibc-relayer-logs"
 

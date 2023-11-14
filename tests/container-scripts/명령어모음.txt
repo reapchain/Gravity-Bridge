@@ -1,0 +1,101 @@
+eth-key
+  - pb: 0x986155CA1CEBc1E1412b371742Ab2704b1b42158
+  - pv: 6507221d5739137719fe4b8cb7525db6bec424df9d6ce80f4757bfacb094bad5
+
+# 초기 물량 추가.
+gravity keys add creap --home ./node_data/validator1/ --keyring-backend test
+gravity add-genesis-account creap 44000000000000000000000000gravity0xCcC78428CC7fd242c31cB9074546f2c6ff8cd536 --home ./node_data/validator1/ --keyring-backend test
+
+
+gravity --home ./node_data/validator1/ --address tcp://0.0.0.0:26655 --rpc.laddr tcp://0.0.0.0:26656 --grpc.address 0.0.0.0:9090 --grpc-web.address 0.0.0.0:9091 --log_level info --inv-check-period 1 --p2p.laddr tcp://0.0.0.0:26658 start
+
+
+gbt -a gravity orchestrator \
+  --cosmos-grpc="http://localhost:9090/" \
+  --ethereum-rpc="https://sepolia.infura.io/v3/6e7a5ddb55cc4d02b51a7d65830fca30" \
+  --fees="1stake" \
+  --gravity-contract-address="0x8981c0236c384C5a64372Ca5F3229FE71E9d21b2"
+
+gbt -a gravity orchestrator \
+  --cosmos-phrase="army forward evil extend august piece fun during lesson tourist guitar glove arch sound devote front balance gold canvas suggest party width purity increase" \
+  --ethereum-key="0x6507221d5739137719fe4b8cb7525db6bec424df9d6ce80f4757bfacb094bad5" \
+  --cosmos-grpc="http://localhost:9090/" \
+  --ethereum-rpc="https://sepolia.infura.io/v3/6e7a5ddb55cc4d02b51a7d65830fca30" \
+  --fees="1stake" \
+  --gravity-contract-address="0xD238dabdf5966d7A35B2A49CF456428a820E5347"
+
+
+gbt client eth-to-cosmos --amount 20000 \
+  --token-contract-address="0xCcC78428CC7fd242c31cB9074546f2c6ff8cd536" \
+  --destination="gravity176exct5t55ryfd64lsrkwp8jg80uf8rxycdtjp" \
+  --ethereum-key="0x6507221d5739137719fe4b8cb7525db6bec424df9d6ce80f4757bfacb094bad5" \
+  --gravity-contract-address="0x8981c0236c384C5a64372Ca5F3229FE71E9d21b2" \
+  --ethereum-rpc="https://sepolia.infura.io/v3/6e7a5ddb55cc4d02b51a7d65830fca30"
+
+
+gbt client cosmos-to-eth --amount "5000000000000000000gravity0xCcC78428CC7fd242c31cB9074546f2c6ff8cd536" \
+  --cosmos-phrase "" \
+  --fee "100gravity0xCcC78428CC7fd242c31cB9074546f2c6ff8cd536" \
+  --bridge-fee "200000000000000gravity0xCcC78428CC7fd242c31cB9074546f2c6ff8cd536" \
+  --chain-fee "500000000000000gravity0xCcC78428CC7fd242c31cB9074546f2c6ff8cd536" \
+  --eth-destination "0x03c2E63183450Dd9827C3c74b1540AaE9A4d20a6"
+
+
+gravity tx gravity send-to-eth [eth-dest] [amount] [bridge-fee] [chain-fee] [flags]
+
+gravity tx gravity send-to-eth 0x03c2E63183450Dd9827C3c74b1540AaE9A4d20a6 \
+10000000000000000000gravity0xCcC78428CC7fd242c31cB9074546f2c6ff8cd536 \
+100gravity0xCcC78428CC7fd242c31cB9074546f2c6ff8cd536 \
+20000000000000000gravity0xCcC78428CC7fd242c31cB9074546f2c6ff8cd536 \
+--from gravity15ljqxd6xp7kvqtz68jj68tvsh5ylwy3yzkawtt \
+--home ./node_data/validator1 --keyring-backend test \
+--node http://localhost:26656 --chain-id reap-gravity-test -y
+
+gravity tx gravity cancel-send-to-eth FCA8A3909117D7AA149264339C8B739432AF391F85D47FDD8D593B1B070B63E5 \
+--from gravity176exct5t55ryfd64lsrkwp8jg80uf8rxycdtjp \
+--home /Users/eddy/bridge/validator1 --keyring-backend test \
+--node http://localhost:26656 --chain-id reap-gravity-test -y
+
+gravity q bank balances gravity1ne86pgnxdm776qd54jldvag63w26qkzug9y4u9 --node http://localhost:26656 
+
+# community pool
+gravity query distribution community-pool --node http://192.168.100.6:26656
+
+# gravity module account
+gravity q bank balances gravity16n3lc7cywa68mg50qhp847034w88pntqzx3ksm --node http://localhost:26656
+
+# fee collector
+gravity q bank balances gravity17xpfvakm2amg962yls6f84z3kell8c5l5f3cw4 --node http://localhost:26656
+
+# distribution module account
+gravity q bank balances gravity1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8r0kyvh --node http://localhost:26656
+
+# pending batches
+gravity query gravity pending-batch-request $(gravity keys show orchestrator1 -a --home /Users/eddy/bridge/validator1 --keyring-backend test ) --node http://localhost:26656
+
+
+gravity query gravity pending-send-to-eth 0x03c2E63183450Dd9827C3c74b1540AaE9A4d20a6 --node http://localhost:26656
+
+
+Eth key
+    0x986155CA1CEBc1E1412b371742Ab2704b1b42158
+    6507221d5739137719fe4b8cb7525db6bec424df9d6ce80f4757bfacb094bad5
+
+ERC20
+    0x0e5507620e27f9EC6a0412d255B1C9662a707340
+        - 0x986155CA1CEBc1E1412b371742Ab2704b1b42158 : 20억개
+
+GRAVITY
+    0xC0aA5fFeefD84B8Feb4d564C70d27946fC7B6089
+
+http://192.168.100.6:26656/status
+
+            {
+              "denom": "gravity0x0e5507620e27f9EC6a0412d255B1C9662a707340",
+              "amount": "2000000000000000000000000000"
+            }
+
+
+
+
+[2023-06-15T04:30:20Z WARN  relayer::request_batches] Failed to request batch with RequestError { error: Status { code: Unknown, message: "failed to execute message; message index: 0: Could not build outgoing tx batch: new batch would not be more profitable: invalid [/Users/eddy/Workspace/reapchain/bridge/Gravity-Bridge/module/x/gravity/keeper/batch.go:49] With gas wanted: '0' and gas used: '84663' ", metadata: MetadataMap { headers: {"content-type": "application/grpc", "x-cosmos-block-height": "1010"} }, source: None } }
