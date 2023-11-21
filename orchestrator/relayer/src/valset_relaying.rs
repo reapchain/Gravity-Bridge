@@ -12,7 +12,8 @@ use ethereum_gravity::{
 use gravity_proto::gravity::query_client::QueryClient as GravityQueryClient;
 use gravity_utils::error::GravityError;
 use gravity_utils::num_conversion::{print_eth, print_gwei};
-use gravity_utils::prices::get_weth_price_with_retries;
+// use gravity_utils::prices::get_weth_price_with_retries;
+use gravity_utils::prices::get_reap_price_with_retries;
 use gravity_utils::types::{RelayerConfig, Valset};
 use gravity_utils::types::{ValsetConfirmResponse, ValsetRelayingMode};
 use tonic::transport::Channel;
@@ -229,25 +230,28 @@ async fn should_relay_valset(
         // if the user has configured only profitable relaying then it is our only consideration
         ValsetRelayingMode::ProfitableOnly { margin } => match valset.reward_token {
             Some(reward_token) => {
-                let price = get_weth_price_with_retries(
+                let price = get_reap_price_with_retries( //get_weth_price_with_retries(
                     pubkey,
                     reward_token,
                     valset.reward_amount.clone(),
                     web3,
                 )
                 .await;
-                let cost_with_margin = get_cost_with_margin(cost.get_total(), *margin);
+                let cost_with_margin = get_cost_with_margin(cost.get_total(), *margin);                
                 // we need to see how much WETH we can get for the reward token amount,
                 // and compare that value to the gas cost times the margin
                 match price {
-                    Ok(price) => price > cost_with_margin,
+                    Ok(price) => {
+                        info!("Price: {}, Cost with margin: {}", price, cost_with_margin);
+                        price > cost_with_margin
+                    },
                     Err(e) => {
                         info!(
                             "Unable to determine swap price of token {} for WETH \n
                              it may just not be on Uniswap - Will not be relaying valset {:?}",
                             reward_token, e
                         );
-                        false
+                        true //false
                     }
                 }
             }

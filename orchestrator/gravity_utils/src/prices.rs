@@ -40,6 +40,18 @@ pub async fn get_weth_price_with_retries(
         .await
 }
 
+// Temporary
+pub async fn get_reap_price_with_retries(
+    pubkey: EthAddress,
+    token: EthAddress,
+    amount: Uint256,
+    web3: &Web3,
+) -> Result<Uint256, Web3Error> {
+    let price = Uint256::from(10000000 as u64);
+
+    return Ok(price)
+}
+
 /// utility function, gets the price of a given ERC20 token in uniswap in WETH given the erc20 address and amount
 /// note that this function will only query the default fee pool (0.3%)
 pub async fn get_weth_price(
